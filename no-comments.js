@@ -1,9 +1,5 @@
-//URL sheets
 const baseURL = 'https://search-user-epuleam.vercel.app/api'
-//URL pruebas
-// const baseURL = 'http://localhost:3000/api'
 
-//obtener campos del formulario
 const cedula = document.getElementById("cedula")
 const nombre = document.getElementById("nombre")
 const cursoSelect = document.getElementById("cursos")
@@ -12,10 +8,8 @@ const infoDiv2 = document.getElementById("infoDiv2")
 const metodoPago = document.getElementById("metodoPago")
 const btnSearch = document.getElementById("buscar")
 const form = document.getElementById("payForm")
-//variable global para los datos del estudiante
 let estudiante;
 
-//inputs de relleno dependiendo del tipo de pago que desee realizar
 const inputComprobante = `<div class="hide col-6">
 <label for="metodoPago" class="form-label">Comprobante de depósito o transferecia </label>
 <input accept="image/*" type="file" class="form-control" name="comprobante" id="comprobante" required>
@@ -51,7 +45,6 @@ const emailInput = `
 <div class="invalid-feedback">Formato del correo ingresado incorrecto</div>
 </div>`
 
-//rellenar el formulario de acuerdo al tipo de pago seleccionado
 metodoPago.addEventListener('change',
     function () {
         let selectedOption = this.options[metodoPago.selectedIndex];
@@ -93,14 +86,11 @@ metodoPago.addEventListener('change',
             })
         }
     })
-//ocultar o mostrar campos
 $(document).ready(function () {
     $('.hide').hide()
-    //inicar validaciones
     validateFields();
 });
 
-//funcion inicial para buscar el estudiante
 btnSearch.addEventListener('click', () => {
     if (cedula.value.length == 10) {
         consultarEstudiante(cedula.value)
@@ -108,14 +98,11 @@ btnSearch.addEventListener('click', () => {
     form.classList.add('was-validated')
 })
 
-//funcion principal para validar todos los campos del formulario y ejecutar la logica
 function validateFields() {
     'use strict'
 
-    // Fetch all the forms we want to apply custom Bootstrap validation styles to
     var forms = document.querySelectorAll('.needs-validation')
 
-    // Loop over them and prevent submission
     Array.prototype.slice.call(forms)
         .forEach(function (form) {
             form.addEventListener('submit', async function (event) {
@@ -133,31 +120,23 @@ function validateFields() {
                     });
                     swal.showLoading();
                     try {
-                        //generamos un form data con los datos llenados en el formulario
                         const data = Object.fromEntries(new FormData(form))
                         if (!data.nombre) {
                             data.nombre = nombre.value
                         }
-                        //verificamos que existe un correo y en caso de no existir lo rellenamos con el consultado en excel
                         if (!data.correo) {
                             data.correo = estudiante.EMAIL
                         }
-                        //verificamos que existe un telefono y en caso de no existir lo rellenamos con el consultado en excel
                         if (!data.telefono) {
                             data.telefono = estudiante.TELEFONO
                         }
-                        //verificamos que existe un comprobante
                         if (data.comprobante) {
-                            //mutamos el formdata con el nombre del archivo
                             data.filename = data.comprobante.name
-                            //subimos el archivo a cloudinary
                             const secure_img_url = await subirImg(data.comprobante)
-                            //si se realizo con exito mutamos el formData con el url del comprobante
                             if (secure_img_url) {
                                 data.comprobante = secure_img_url
                             }
                         }
-                        // finalmente enviamos los datos por correo electronico
                         const res = await sendData(data)
                         if(res.length>0){
                             Swal.close();
@@ -171,7 +150,6 @@ function validateFields() {
                                 allowEnterKey: false,
                                 timer: 2500
                             })
-                            //redirigimos al inicio
                             return window.location.href = "https://ep-uleam.gob.ec/";
                         }
                         throw new Error('error')
@@ -190,7 +168,6 @@ function validateFields() {
         })
 }
 
-//funcion para subir el comprobante a cloudinary y obtener el enlace del mismo
 async function subirImg(file) {
     const cloudinaryUrl = 'https://api.cloudinary.com/v1_1/epuleam/image/upload'
     const formData = new FormData()
@@ -209,9 +186,7 @@ async function subirImg(file) {
     }
 }
 
-//funcion llamada al servidor para enviar los correos
 const sendData = async (data) => {
-    // Haciendo la peticion de los datos
     const url = new URL(`${baseURL}/mailPayment`)
     Object.keys(data).forEach(key => url.searchParams.append(key, encodeURIComponent(data[key])));
     return fetch(url)
@@ -219,16 +194,13 @@ const sendData = async (data) => {
         .then(data => console.log(data))
         .catch(err => err)
 }
-//funcion para buscar el usuario en la hoja de excel
 const searchSheetUser = async (cedula) => {
-    // Haciendo la peticion de los datos
     return fetch(`${baseURL}/searchSheetUser?cedula=${cedula}`)
         .then(r => r.json())
         .then(data => data.data)
         .catch(err => err)
 }
 
-//funcion para limpiar las opciones
 const limpiarSelect = () => {
     for (let i = cursoSelect.options.length; i >= 0; i--) {
         cursoSelect.remove(i);
@@ -237,7 +209,6 @@ const limpiarSelect = () => {
     `
 }
 
-//funcion para buscar los datos del estudiante
 const consultarEstudiante = async (cedula) => {
     Swal.fire({
         title: "Consultando estudiante!",
