@@ -141,7 +141,6 @@ function validateFields() {
                         if(res.message=='correos enviados'){
                             Swal.close();
                             Swal.fire({
-                                position: 'top-end',
                                 icon: 'success',
                                 title: 'Enviado correctamente',
                                 showConfirmButton: false,
