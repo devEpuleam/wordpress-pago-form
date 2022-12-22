@@ -24,7 +24,7 @@ const inputComprobante = `<div class="hide col-6">
 const datalinkForm = `
 <div class="hide col-6">
     <label for="monto" class="form-label">Monto a pagar</label>
-    <input type="number" class="form-control" name="monto" id="monto" placeholder="Ej. 10" pattern="^\\d$"
+    <input type="number" class="form-control" name="monto" id="monto" placeholder="Ej. 10" pattern="^\d$"
         required>
     <div class="invalid-feedback">Ingrese un valor númerico</div>
 </div>
@@ -40,14 +40,14 @@ const datalinkForm = `
 const telefonoInput = `
 <div class="hide col-6">
 <label for="telefono" class="form-label">Teléfono</label>
-<input class="form-control" type="text" name="telefono" id="telefono" placeholder="Ej. 0989583981" maxlenght="10" pattern="^09\\d{8}$" required>
+<input class="form-control" type="text" name="telefono" id="telefono" placeholder="Ej. 0989583981" maxlenght="10" pattern="^09\d{8}$" required>
 <div class="invalid-feedback">El número debe empezar con '09' y tener 10 dígitos.</div>
 </div>`
 const emailInput = `
 <div class="hide col-6">
 <label for="email" class="form-label">Correo</label>
 <input class="form-control" type="email" name="email" id="email" placeholder="Ej. Alejandro@gmail.com"
-  pattern="^[^@]+@[^@]+\\.[a-zA-Z]{2,}$" required>
+  pattern="^[^@]+@[^@]+\.[a-zA-Z]{2,}$" required>
 <div class="invalid-feedback">Formato del correo ingresado incorrecto</div>
 </div>`
 
@@ -159,7 +159,7 @@ function validateFields() {
                         }
                         // finalmente enviamos los datos por correo electronico
                         const res = await sendData(data)
-                        if(res.length>0){
+                        if(res.message=='correos enviados'){
                             Swal.close();
                             Swal.fire({
                                 position: 'top-end',
@@ -216,7 +216,7 @@ const sendData = async (data) => {
     Object.keys(data).forEach(key => url.searchParams.append(key, encodeURIComponent(data[key])));
     return fetch(url)
         .then(r => r.json())
-        .then(data => console.log(data))
+        .then(data => data)
         .catch(err => err)
 }
 //funcion para buscar el usuario en la hoja de excel
