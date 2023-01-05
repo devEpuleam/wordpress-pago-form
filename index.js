@@ -16,7 +16,7 @@ const form = document.getElementById("payForm")
 let estudiante;
 
 //inputs de relleno dependiendo del tipo de pago que desee realizar
-const inputComprobante = `<div class="hide col-6">
+const inputComprobante = `<div class="hide col-12">
 <label for="metodoPago" class="form-label">Comprobante de depósito o transferecia </label>
 <input accept="image/*" type="file" class="form-control" name="comprobante" id="comprobante" required>
 <div class="invalid-feedback">Suba el comprobante del depósito o transferecia</div>
@@ -262,11 +262,10 @@ const consultarEstudiante = async (cedula) => {
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
-                text: `La cedula ${cedula} no se encuentra registrado`,
+                text: `El estudiante con la cedula ${cedula} no se encuentra registrado`,
             })
-            nombre.value = `USUARIO NO EXISTE`
+            nombre.value = `USUARIO NO ENCONTRADO`
             $('.hide').hide()
-            throw new Error(`${"error Estudiante con la cedula "}${cedula}${" no fue encontrado"}`);
         }
     } catch (error) {
         Swal.close()
